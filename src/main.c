@@ -2,7 +2,8 @@
 #include "data.h"
 #undef extern_
 #include "defs.h"
-#include "scan.h"
+#include "decl.h"
+
 
 static void init()
 {
@@ -36,6 +37,7 @@ static void scanfile()
 
 void main(int argc, char *argv[])
 {
+    struct ASTNode *n;
     init();
 
     if (argc != 2)
@@ -44,10 +46,15 @@ void main(int argc, char *argv[])
         exit(1);
     }
 
-    if ((Infile = fopen(argv[1], "r")) == NULL) {
+    if ((Infile = fopen(argv[1], "r")) == NULL)
+    {
         printf("Couldn't open file %s\n", argv[1]);
         exit(1);
     }
-    scanfile();
-    exit(1);
+
+    scan(&Token);
+    n = binexpr();
+    printf("%d\n", interpretAST(n));
+
+    exit(0);
 }
